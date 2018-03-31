@@ -1,10 +1,11 @@
 FLAGS=-Wall -Wextra -Wpedantic -pedantic-errors -Werror -Winline
 SRC=main.c
+NUM_ERR=5
 
 all: clang gcc
 
 clang:
-	clang ${FLAGS} ${SRC}
+	clang ${FLAGS} ${SRC} -ferror-limit=${NUM_ERR}
 
 gcc:
-	clang ${FLAGS} ${SRC}
+	gcc   ${FLAGS} ${SRC} -fmax-errors=${NUM_ERR}
