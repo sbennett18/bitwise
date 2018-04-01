@@ -61,4 +61,4 @@ TAGS: $(SRCS)
 	$(AT)$(CC) -M -I$(INCDIR) $(SRCS) \
 		| sed -e 's/[\\ ]/\n/g' \
 		| sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' \
-		| ctags -L - --c++-kinds=+p --fields=+iaS --extra=+fq
+		| ctags -f ../tags -L - --c++-kinds=+p --fields=+iaS --extra=+fq --tag-relative=yes
