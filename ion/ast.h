@@ -4,7 +4,7 @@ typedef struct Decl Decl;
 typedef struct Typespec Typespec;
 
 typedef struct StmtList {
-    Stmt **stmts;
+    Stmt** stmts;
     size_t num_stmts;
 } StmtList;
 
@@ -19,36 +19,36 @@ typedef enum TypespecKind {
 struct Typespec {
     TypespecKind kind;
     union {
-        const char *name;
+        const char* name;
         struct {
-            Typespec **args;
+            Typespec** args;
             size_t num_args;
-            Typespec *ret;
+            Typespec* ret;
         } func;
         struct {
-            Typespec *elem;
-            Expr *size;
+            Typespec* elem;
+            Expr* size;
         } array;
         struct {
-            Typespec *elem;
+            Typespec* elem;
         } ptr;
     };
 };
 
 typedef struct FuncParam {
-    const char *name;
-    Typespec *type;
+    const char* name;
+    Typespec* type;
 } FuncParam;
 
 typedef struct AggregateItem {
-    const char **names;
+    const char** names;
     size_t num_names;
-    Typespec *type;
+    Typespec* type;
 } AggregateItem;
 
 typedef struct EnumItem {
-    const char *name;
-    Expr *init;
+    const char* name;
+    Expr* init;
 } EnumItem;
 
 typedef enum DeclKind {
@@ -64,31 +64,31 @@ typedef enum DeclKind {
 
 struct Decl {
     DeclKind kind;
-    const char *name;
+    const char* name;
     union {
         struct {
-            EnumItem *items;
+            EnumItem* items;
             size_t num_items;
         } enum_decl;
         struct {
-            AggregateItem *items;
+            AggregateItem* items;
             size_t num_items;
         } aggregate;
         struct {
-            FuncParam *params;
+            FuncParam* params;
             size_t num_params;
-            Typespec *ret_type;
+            Typespec* ret_type;
             StmtList block;
         } func;
         struct {
-            Typespec *type;
+            Typespec* type;
         } typedef_decl;
         struct {
-            Typespec *type;
-            Expr *expr;
+            Typespec* type;
+            Expr* expr;
         } var;
         struct {
-            Expr *expr;
+            Expr* expr;
         } const_decl;
     };
 };
@@ -119,10 +119,10 @@ typedef enum CompoundFieldKind {
 
 typedef struct CompoundField {
     CompoundFieldKind kind;
-    Expr *init;
+    Expr* init;
     union {
-        const char *name;
-        Expr *index;
+        const char* name;
+        Expr* index;
     };
 } CompoundField;
 
@@ -131,56 +131,56 @@ struct Expr {
     union {
         int64_t int_val;
         double float_val;
-        const char *str_val;
-        const char *name;
-        Expr *sizeof_expr;
-        Typespec *sizeof_type;
-            struct {
-                Typespec *type;
-                CompoundField *fields;
-                size_t num_fields;
-            } compound;
+        const char* str_val;
+        const char* name;
+        Expr* sizeof_expr;
+        Typespec* sizeof_type;
         struct {
-            Typespec *type;
-            Expr *expr;            
+            Typespec* type;
+            CompoundField* fields;
+            size_t num_fields;
+        } compound;
+        struct {
+            Typespec* type;
+            Expr* expr;
         } cast;
         struct {
             TokenKind op;
-            Expr *expr;
+            Expr* expr;
         } unary;
         struct {
             TokenKind op;
-            Expr *left;
-            Expr *right;
+            Expr* left;
+            Expr* right;
         } binary;
         struct {
-            Expr *cond;
-            Expr *then_expr;
-            Expr *else_expr;
+            Expr* cond;
+            Expr* then_expr;
+            Expr* else_expr;
         } ternary;
         struct {
-            Expr *expr;
-            Expr **args;
-            size_t num_args;            
+            Expr* expr;
+            Expr** args;
+            size_t num_args;
         } call;
         struct {
-            Expr *expr;
-            Expr *index;
+            Expr* expr;
+            Expr* index;
         } index;
         struct {
-            Expr *expr;
-            const char *name;
+            Expr* expr;
+            const char* name;
         } field;
     };
 };
 
 typedef struct ElseIf {
-    Expr *cond;
+    Expr* cond;
     StmtList block;
 } ElseIf;
 
 typedef struct SwitchCase {
-    Expr **exprs;
+    Expr** exprs;
     size_t num_exprs;
     bool is_default;
     StmtList block;
@@ -206,39 +206,39 @@ typedef enum StmtKind {
 struct Stmt {
     StmtKind kind;
     union {
-        Expr *expr;
-        Decl *decl;
+        Expr* expr;
+        Decl* decl;
         struct {
-            Expr *cond;
+            Expr* cond;
             StmtList then_block;
-            ElseIf *elseifs;
+            ElseIf* elseifs;
             size_t num_elseifs;
-            StmtList else_block;            
+            StmtList else_block;
         } if_stmt;
         struct {
-            Expr *cond;
+            Expr* cond;
             StmtList block;
         } while_stmt;
         struct {
-            Stmt *init;
-            Expr *cond;
-            Stmt *next;
+            Stmt* init;
+            Expr* cond;
+            Stmt* next;
             StmtList block;
         } for_stmt;
         struct {
-            Expr *expr;
-            SwitchCase *cases;
-            size_t num_cases;            
+            Expr* expr;
+            SwitchCase* cases;
+            size_t num_cases;
         } switch_stmt;
         StmtList block;
         struct {
             TokenKind op;
-            Expr *left;
-            Expr *right;
+            Expr* left;
+            Expr* right;
         } assign;
         struct {
-            const char *name;
-            Expr *expr;
+            const char* name;
+            Expr* expr;
         } init;
     };
 };
