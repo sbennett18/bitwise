@@ -470,21 +470,23 @@ repeat:
     token.mod = 0;
 
     switch (*stream) {
+    // *INDENT-OFF*
     case ' ': case '\n': case '\r': case '\t': case '\v':
+    // *INDENT-ON*
         while (isspace(*stream)) {
             stream++;
         }
 
         goto repeat;
-    break;
+        break;
 
     case '\'':
         scan_char();
-    break;
+        break;
 
     case '"':
         scan_str();
-    break;
+        break;
 
     case '.':
         if (isdigit(stream[1])) {
@@ -493,24 +495,29 @@ repeat:
             token.kind = TOKEN_DOT;
             stream++;
         }
-    break;
+
+        break;
+
+    // *INDENT-OFF*
     case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9': {
-        while (isdigit(*stream)) {
-            stream++;
+    // *INDENT-ON*
+            while (isdigit(*stream)) {
+                stream++;
+            }
+
+            char c = *stream;
+            stream = token.start;
+
+            if (c == '.' || tolower(c) == 'e') {
+                scan_float();
+            } else {
+                scan_int();
+            }
+
+            break;
         }
 
-        char c = *stream;
-        stream = token.start;
-
-        if (c == '.' || tolower(c) == 'e') {
-            scan_float();
-        } else {
-            scan_int();
-        }
-
-    break;
-    }
-
+    // *INDENT-OFF*
     case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i': case 'j':
     case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r': case 's': case 't':
     case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
@@ -518,6 +525,7 @@ repeat:
     case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T':
     case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
     case '_':
+    // *INDENT-ON*
         while (isalnum(*stream) || *stream == '_') {
             stream++;
         }
@@ -565,6 +573,7 @@ repeat:
         }
 
         break;
+    // *INDENT-OFF*
     CASE1('\0', TOKEN_EOF)
     CASE1('(', TOKEN_LPAREN)
     CASE1(')', TOKEN_RPAREN)
@@ -587,6 +596,7 @@ repeat:
     CASE3('-', TOKEN_SUB, '=', TOKEN_SUB_ASSIGN, '-', TOKEN_DEC)
     CASE3('&', TOKEN_AND, '=', TOKEN_AND_ASSIGN, '&', TOKEN_AND_AND)
     CASE3('|', TOKEN_OR, '=', TOKEN_OR_ASSIGN, '|', TOKEN_OR_OR)
+    // *INDENT-ON*
     default:
         syntax_error("Invalid '%c' token, skipping", *stream);
         stream++;
