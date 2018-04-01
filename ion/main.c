@@ -14,12 +14,14 @@
 #include "common.c"
 #include "lex.c"
 #include "ast.h"
-#include "ast.c"    
+#include "ast.c"
 #include "print.c"
 #include "parse.c"
 #include "resolve.c"
 
-void main_test(void) {
+void
+main_test(void)
+{
     common_test();
     lex_test();
     // print_test();
@@ -27,7 +29,9 @@ void main_test(void) {
     resolve_test();
 }
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
     main_test();
     return 0;
 }
