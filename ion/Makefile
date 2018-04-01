@@ -1,23 +1,22 @@
-TARGET = a.out
+TARGET = ion
 
 CC = clang
 NR_ERR = 5
 
-CFLAGS  = -I$(IDIR) -Wall -Wextra -Wpedantic -pedantic-errors -Werror
+CFLAGS  = -I$(INCDIR) -Wall -Wextra -Wpedantic -pedantic-errors -Werror
 CFLAGS += -Winline -Wmissing-prototypes -Wstrict-prototypes
 
 DEFS =
 LIBS = -lm
 
-IDIR = ../include
-ODIR = obj
-LDIR = ../lib
-
-_HDRS = $(wildcard $(IDIR)/*.h)
-#HDRS  = $(patsubst $(IDIR)/%, %, $(_HDRS))
-
 SRCS = $(wildcard *.c)
-OBJS = $(patsubst %, $(ODIR)/%, $(SRCS:.c=.o))
+OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
+HDRS = $(wildcard $(INCDIR)/*.h)
+#HDRS  = $(patsubst $(INCDIR)/%, %, $(_HDRS))
+
+OBJDIR = ../obj
+INCDIR = ../include
+LIBDIR = ../lib
 
 ifeq ($(CC),gcc)
 	CFLAGS += -fmax-errors=$(NR_ERR)
@@ -25,18 +24,18 @@ else
 	CFLAGS += -ferror-limit=$(NR_ERR)
 endif
 
-V := 1
+V    := 0
 AT_0 := @
 AT_1 :=
-AT = $(AT_$(V))
+AT    = $(AT_$(V))
 
 #$(warning A top-level warning $(OBJECTS))
 .PHONY: all
 all: $(TARGET)
 
 
-$(ODIR)/%.o: %.c $(_HDRS)
-	$(AT)echo $<
+$(OBJDIR)/%.o: %.c $(HDRS)
+	@echo $<
 	$(AT)$(CC) $(CFLAGS) -c $< -o $@
 
 
@@ -46,20 +45,20 @@ $(TARGET): $(OBJS)
 
 .PHONY: clean
 clean:
-	$(AT)rm -rf $(ODIR) core
+	$(AT)rm -rf $(OBJDIR) core
 
 
-$(OBJS): | $(ODIR)
+$(OBJS): | $(OBJDIR)
 
 
-$(ODIR):
+$(OBJDIR):
 	$(AT)mkdir -p $@
 
 
-.PHONY: ctags
-ctags:
+.PHONY: TAGS
+TAGS: $(SRCS)
 	# make requires escaping $ as $$
-	$(AT)$(CC) -M -I$(IDIR) $(SRCS) \
+	$(AT)$(CC) -M -I$(INCDIR) $(SRCS) \
 		| sed -e 's/[\\ ]/\n/g' \
 		| sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' \
 		| ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q
