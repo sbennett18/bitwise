@@ -57,8 +57,8 @@ $(OBJDIR):
 
 .PHONY: TAGS
 TAGS: $(SRCS)
-	# make requires escaping $ as $$
+# make requires escaping $ as $$
 	$(AT)$(CC) -M -I$(INCDIR) $(SRCS) \
 		| sed -e 's/[\\ ]/\n/g' \
 		| sed -e '/^$$/d' -e '/\.o:[ \t]*$$/d' \
-		| ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q
+		| ctags -L - --c++-kinds=+p --fields=+iaS --extra=+fq
